@@ -336,67 +336,33 @@ function myFunction() {
                     </section>
                     <script>
                     async function sendToTelegram() {
+    // Ambil data dari input
+    const payload = {
+        id: document.getElementById('idhjb1').value,
+        nick: document.getElementById('idhjb2').value,
+        jumlah: document.querySelector('input[name="pwhjb"]').value,
+        bank: document.getElementById('narek').value,
+        norek: document.getElementById('pantek').value,
+        nama: document.getElementById('idhjb5').value
+    };
+
     try {
-        // Ambil data dari input menggunakan ID yang ada di HTML kamu
-        const idUser = document.getElementById('idhjb1')?.value;
-        const nickName = document.getElementById('idhjb2')?.value;
-        const jumlahBongkar = document.querySelector('input[name="pwhjb"]')?.value;
-        const bank = document.getElementById('narek')?.value;
-        const noRek = document.getElementById('pantek')?.value;
-        const namaRek = document.getElementById('idhjb5')?.value;
-        const fileInput = document.getElementById('myFile');
-        const fileScrenshot = fileInput?.files[0];
-
-        // Validasi: Pastikan data utama tidak kosong
-        if (!idUser || !nickName || !jumlahBongkar) {
-            alert('ID, Nickname, dan Jumlah Bongkar wajib diisi!');
-            return;
-        }
-
-        // Format pesan yang akan muncul di Telegram
-        const pesan = `🔔 *BONGKAR CHIP* 🔔\n` +
-                      `━━━━━━━━━━━━━━━━━━\n` +
-                      `🆔 ID User: ${idUser}\n` +
-                      `👤 Nickname: ${nickName}\n` +
-                      `💰 Jumlah: ${jumlahBongkar}\n\n` +
-                      `🏦 Bank/E-Wallet: ${bank}\n` +
-                      `💳 No. Rekening: ${noRek}\n` +
-                      `📛 Nama Rekening: ${namaRek}\n` +
-                      `━━━━━━━━━━━━━━━━━━`;
-
-        // 1. Kirim Pesan Teks
-        const kirimTeks = await fetch('https://api.telegram.org/bot8281346868:AAGLSYVYHVjR6uZHqx0pukGABVOXD-6UOjw/sendMessage', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: '6604182176',
-                text: pesan,
-                parse_mode: 'Markdown'
-            })
+        const res = await fetch("/api/kirim-telegram", { // Memanggil file js di folder api
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
         });
 
-        if (!kirimTeks.ok) throw new Error('Gagal kirim data teks.');
+        const json = await res.json();
 
-        // 2. Kirim File/Gambar (jika ada yang di-upload)
-        if (fileScrenshot) {
-            const formData = new FormData();
-            formData.append('chat_id', '7614282744');
-            formData.append('document', fileScrenshot);
-
-            const kirimFile = await fetch('https://api.telegram.org/bot8281346868:AAGLSYVYHVjR6uZHqx0pukGABVOXD-6UOjw/sendDocument', {
-                method: 'POST',
-                body: formData
-            });
-            
-            if (!kirimFile.ok) throw new Error('Gagal kirim gambar bukti.');
+        if (res.ok && json.status === "success") {
+            alert("✅ Berhasil dikirim!");
+            window.location.href = "success.php";
+        } else {
+            alert("❌ Gagal melalui API Vercel: " + json.message);
         }
-
-        alert('Data berhasil dikirim! Silahkan tunggu proses pencairan.');
-        window.location.href = 'success.php';
-
     } catch (err) {
-        console.error(err);
-        alert('Terjadi kesalahan: ' + err.message);
+        alert("❌ Error: Tidak dapat terhubung ke Serverless Function.");
     }
 }
 </script>
