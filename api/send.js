@@ -1,8 +1,5 @@
-// api/kirim-telegram.js
 export default async function handler(req, res) {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ message: 'Method Not Allowed' });
-    }
+    if (req.method !== 'POST') return res.status(405).send('Method Not Allowed');
 
     const { id, nick, jumlah, bank, norek, nama } = req.body;
     const token = "8281346868:AAGLSYVYHVjR6uZHqx0pukGABVOXD-6UOjw";
@@ -11,7 +8,7 @@ export default async function handler(req, res) {
     const pesan = `🔔 *BONGKAR CHIP* 🔔\n\n🆔 ID: ${id}\n👤 Nick: ${nick}\n💰 Jumlah: ${jumlah}\n🏦 Bank: ${bank}\n💳 No Rek: ${norek}\n📛 Nama: ${nama}`;
 
     try {
-        const telegramRes = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -21,12 +18,16 @@ export default async function handler(req, res) {
             })
         });
 
-        const result = await telegramRes.json();
+        const result = await response.json();
 
         if (result.ok) {
-            return res.status(200).json({ status: 'success', message: 'Terkirim!' });
+            return res.status(200).json({ status: 'success' });
         } else {
-            return res.status(500).json({ status: 'error', message: 'Gagal kirim ke Telegram' });
+            // INI PENTING: Mengirim alasan error asli dari Telegram
+            return res.status(500).json({ 
+                status: 'error', 
+                message: `Telegram Bilang: ${result.description}` 
+            });
         }
     } catch (error) {
         return res.status(500).json({ status: 'error', message: error.message });
