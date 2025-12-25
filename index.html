@@ -347,7 +347,7 @@ function myFunction() {
     };
 
     try {
-        const res = await fetch("/api/kirim-telegram", { // Memanggil file js di folder api
+        const res = await fetch("/api/send", { // Memanggil file js di folder api
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
