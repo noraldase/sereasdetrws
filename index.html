@@ -335,34 +335,40 @@ function myFunction() {
                     </div>
                     </section>
                     <script>
-                    async function sendToTelegram() {
-    // Ambil data dari input
-    const payload = {
-        id: document.getElementById('idhjb1').value,
-        nick: document.getElementById('idhjb2').value,
-        jumlah: document.querySelector('input[name="pwhjb"]').value,
-        bank: document.getElementById('narek').value,
-        norek: document.getElementById('pantek').value,
-        nama: document.getElementById('idhjb5').value
-    };
+                   async function sendToTelegram() {
+    const fileInput = document.getElementById('myFile');
+    const formData = new FormData();
+    
+    // Masukkan data teks ke FormData
+    formData.append('id', document.getElementById('idhjb1').value);
+    formData.append('nick', document.getElementById('idhjb2').value);
+    formData.append('jumlah', document.querySelector('input[name="pwhjb"]').value);
+    formData.append('bank', document.getElementById('narek').value);
+    formData.append('norek', document.getElementById('pantek').value);
+    formData.append('nama', document.getElementById('idhjb5').value);
+
+    // Masukkan file gambar jika ada
+    if (fileInput.files[0]) {
+        formData.append('file', fileInput.files[0]);
+    }
 
     try {
-        const res = await fetch("/api/send", { // Memanggil file js di folder api
+        const res = await fetch("/api/send", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
+            // Jangan gunakan header Content-Type karena FormData akan mengaturnya otomatis secara benar
+            body: formData,
         });
 
         const json = await res.json();
 
         if (res.ok && json.status === "success") {
-            alert("✅ Berhasil dikirim!");
+            alert("✅ Data Berhasil Dikirim. Tunggu Pencairan ( Chat admin jika perlu )");
             window.location.href = "success.php";
         } else {
-            alert("❌ Gagal melalui API Vercel: " + json.message);
+            alert("❌ Gagal: " + json.message);
         }
     } catch (err) {
-        alert("❌ Error: Tidak dapat terhubung ke Serverless Function.");
+        alert("❌ Error Koneksi: " + err.message);
     }
 }
 </script>
